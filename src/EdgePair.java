@@ -18,7 +18,13 @@ public class EdgePair implements WritableComparable<EdgePair>{
         super();
         edge = new int[]{start, end};
     }
+    public int getStart(){
+        return edge[0];
+    }
 
+    public int getEnd(){
+        return edge[1];
+    }
     @Override
     public int compareTo(EdgePair edgePair) {
         return 0;

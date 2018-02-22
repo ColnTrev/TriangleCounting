@@ -14,7 +14,7 @@ public class GraphEdgeReduce extends Reducer<IntWritable,IntWritable,EdgePair,In
     protected void reduce(IntWritable node, Iterable<IntWritable> edges, Context context) throws IOException,InterruptedException {
 
         List<IntWritable> cache = new ArrayList<>(); // add values from iterable here since iterable passes once
-        //write edges in K,V pairs with K
+        //write edges in K,V pairs with a null connector
         // example [2,1],(-)
         for(IntWritable edge : edges){
             cache.add(edge);

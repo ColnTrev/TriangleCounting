@@ -1,3 +1,5 @@
+
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -5,11 +7,12 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TriangleMap extends Mapper<EdgePair,IntWritable,EdgePair,IntWritable>{
-    private final Map<EdgePair,IntWritable> edgeMap = new HashMap<>();
+    private final Map<EdgePair,ArrayList<IntWritable>> edgeMap = new HashMap<>();
     @Override
     protected void setup(Context context) throws IOException,InterruptedException{
         super.setup(context);
@@ -19,16 +22,20 @@ public class TriangleMap extends Mapper<EdgePair,IntWritable,EdgePair,IntWritabl
             EdgePair edge = new EdgePair();
             IntWritable connector = new IntWritable();
             while(reader.next(edge, connector)) {
-                edgeMap.put(edge, connector);
+                if(!edgeMap.containsKey(edge)) {
+                    edgeMap.put(edge, new ArrayList<>());
+                }
+                edgeMap.get(edge).add(connector);
             }
         }
     }
 
     @Override
-    public void map(IntWritable key, IntWritable value, Context context) throws IOException,InterruptedException {
-        for(HashMap.Entry<EdgePair,IntWritable> entry : edgeMap.entrySet()){
-            context.write(entry.getKey(), entry.getValue());
+    public void map(EdgePair pair, IntWritable connector, Context context) throws IOException,InterruptedException {
+        for(HashMap.Entry<EdgePair,ArrayList<IntWritable>> entry : edgeMap.entrySet()){
+            for(IntWritable node : entry.getValue()) {
+                context.write(entry.getKey(), node);
+            }
         }
-
     }
 }

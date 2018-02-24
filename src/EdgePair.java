@@ -25,6 +25,12 @@ public class EdgePair implements WritableComparable<EdgePair>{
     public int getEnd(){
         return edge[1];
     }
+
+    public void setEdge(int start, int end){
+        edge[0] = start;
+        edge[1] = end;
+    }
+
     @Override
     public int compareTo(EdgePair edgePair) {
         return 0;
